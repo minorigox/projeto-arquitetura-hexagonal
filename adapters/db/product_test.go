@@ -1,8 +1,12 @@
-package db
+package db_test	
 
 import (
 	"database/sql"
 	"log"
+	"testing"
+	"github.com/stretchr/testify/require"
+	"github.com/minorigox/projeto-arquitetura-hexagonal/adapters/db"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var Db *sql.DB
@@ -26,11 +30,23 @@ func createTable(db *sql.DB) {
 	stmt.Exec()
 }
 
-fun createProduct(db *sql.DB) {
+func createProduct(db *sql.DB) {
 	insert := `insert into products values("abc", "Product Test", 0, "disabled")`
 	stmt, err := db.Prepare(insert)
 	if (err != nil) {
 		log.Fatal(err.Error())
 	}
 	stmt.Exec()
+}
+
+func TestProductDB_Get(t *testing.T) {
+	setUp()
+	createProduct(Db)
+	defer Db.Close()
+	productDB := db.NewProductDB(Db)
+	product, err := productDB.Get("abc")
+	require.Nil(t, err)
+	require.Equal(t, "Product Test", product.GetName())
+	require.Equal(t, 0.0, product.GetPrice())
+	require.Equal(t, "disabled", product.GetStatus())
 }
