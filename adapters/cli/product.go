@@ -1,11 +1,11 @@
-package main
+package cli
 
 import (
 	"fmt"
-	"application"
+	"github.com/minorigox/projeto-arquitetura-hexagonal/application"
 )
 
-func Run(service application.ProductServiceInterface, action string, productId string, productName string, productPrice float) (string, error) {
+func Run(service application.ProductServiceInterface, action string, productId string, productName string, productPrice float64) (string, error) {
 	var result = ""
 	switch action {
 		case "create":
@@ -21,7 +21,7 @@ func Run(service application.ProductServiceInterface, action string, productId s
 			if (err != nil) {
 				return result, err
 			}
-			res, err = service.Enable(product)
+			res, err := service.Enable(product)
 			if (err != nil) {
 				return result, err
 			}
@@ -31,7 +31,7 @@ func Run(service application.ProductServiceInterface, action string, productId s
 			if (err != nil) {
 				return result, err
 			}
-			res, err = service.Disable(product)
+			res, err := service.Disable(product)
 			if (err != nil) {
 				return result, err
 			}
